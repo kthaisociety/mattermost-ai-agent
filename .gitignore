@@ -10,3 +10,7 @@ dist/
 .turbo/
 bun.lockb
 .cache/
+
+mastra.db
+mastra.db-shm
+mastra.db-wal
