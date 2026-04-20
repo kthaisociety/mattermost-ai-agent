@@ -17,7 +17,7 @@ export const mattermostAgent = new Agent({
     - Never invent facts about KTHAIS events, members, or internal processes.
       If you do not know, say so and suggest who or where to ask.
   `,
-  model: "openai/gpt-5-mini",
+  model: "vercel/openai/gpt-5.4-mini",
   channels: {
     adapters: {
       mattermost: createMattermostAdapter(),

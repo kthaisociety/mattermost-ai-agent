@@ -32,9 +32,39 @@ This is a Bun workspaces monorepo. All dev/build commands are proxied through th
 bun install
 bun run dev        # runs apps/agent in dev mode
 bun run build      # builds apps/agent
+
+bun run mm:up      # start a local Mattermost server in Docker
+bun run mm:logs    # tail Mattermost logs
+bun run mm:down    # stop (Docker volumes keep your data)
+bun run mm:reset   # stop AND wipe volumes for a clean install
 ```
 
-Requires **Bun >= 1.2.0** and **Node.js >= 20** (for the Mattermost adapter's runtime deps).
+Requires **Bun >= 1.2.0**, **Node.js >= 20** (for the Mattermost adapter's runtime deps), and **Docker Desktop** if you want to run Mattermost locally.
+
+## Local Mattermost for development
+
+If you don't have admin rights on the KTHAIS Mattermost, run your own for development. The repo ships a Docker Compose stack at [`docker/docker-compose.yml`](./docker/docker-compose.yml) with Mattermost Team Edition + Postgres and bot account creation pre-enabled.
+
+```bash
+bun run mm:up
+```
+
+First start takes ~1 min (image pull; on Apple Silicon the Mattermost image runs under Rosetta emulation). When the container is healthy:
+
+1. Open `http://localhost:8065` and create the initial **admin** account (first signup becomes the admin).
+2. Create a team (e.g. `kthais-dev`).
+3. Open the product menu (top-left) → **Integrations** → **Bot Accounts** → **Add Bot Account**. Give it a username like `kthais-ai`, create it, and **copy the access token from the one-time screen**.
+4. Paste into `apps/agent/.env`:
+
+   ```bash
+   MATTERMOST_BASE_URL=http://localhost:8065
+   MATTERMOST_BOT_TOKEN=<the-token-you-just-copied>
+   ```
+
+5. Invite the bot into any channel with `/invite @kthais-ai` (or open a DM with it).
+6. Start the agent with `bun run dev` and @mention the bot or DM it.
+
+Data lives in named Docker volumes (`mm-config`, `mm-data`, `postgres-data`, etc.) and survives `mm:down`. Use `mm:reset` when you want a completely fresh Mattermost install.
 
 ## How channels work here
 

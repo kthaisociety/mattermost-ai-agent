@@ -11,7 +11,11 @@
     "dev": "bun run --cwd apps/agent dev",
     "build": "bun run --cwd apps/agent build",
     "dev:agent": "bun run --cwd apps/agent dev",
-    "build:agent": "bun run --cwd apps/agent build"
+    "build:agent": "bun run --cwd apps/agent build",
+    "mm:up": "docker compose -f docker/docker-compose.yml up -d",
+    "mm:down": "docker compose -f docker/docker-compose.yml down",
+    "mm:logs": "docker compose -f docker/docker-compose.yml logs -f mattermost",
+    "mm:reset": "docker compose -f docker/docker-compose.yml down -v"
   },
   "devDependencies": {
     "@types/bun": "^1.3.12",
