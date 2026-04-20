@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.build/
+.mastra/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.turbo/
+bun.lockb
+.cache/
