@@ -134,7 +134,26 @@ OPENAI_API_KEY=...
 
 # Mastra storage
 DATABASE_URL=file:./mastra.db
+
+# GitHub MCP (read-only access to the kthaisociety org)
+GITHUB_TOKEN=...
+GITHUB_ORG=kthaisociety
 ```
+
+## GitHub access (official GitHub MCP server)
+
+The agent connects to the remote [GitHub MCP server](https://github.com/github/github-mcp-server) at `https://api.githubcopilot.com/mcp/` through Mastra's `MCPClient` (`apps/agent/src/mastra/mcp/github-mcp.ts`). This gives the agent read-only tools to list repos, read files and READMEs, inspect issues and pull requests, and run code / issue / user search scoped to our public organization [`kthaisociety`](https://github.com/kthaisociety).
+
+To enable it:
+
+1. Create a **fine-grained personal access token** at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new).
+   - **Resource owner:** `kthaisociety`
+   - **Repository access:** *Public repositories (read-only)*
+   - No additional permissions required — the token just unlocks the 5000 req/hour rate limit.
+2. Set `GITHUB_TOKEN` (and optionally override `GITHUB_ORG`) in `apps/agent/.env`.
+3. Restart the agent. If `GITHUB_TOKEN` is missing the GitHub tools are silently disabled with a warning; everything else continues to work.
+
+The MCP client is configured with `X-MCP-Readonly: true` and only the `repos,issues,pull_requests,search,users,context` toolsets. If you want to tighten or broaden this, edit `apps/agent/src/mastra/mcp/github-mcp.ts`.
 
 ## Feature support (Mattermost adapter)
 

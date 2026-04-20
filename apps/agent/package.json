@@ -13,6 +13,7 @@
   "dependencies": {
     "@mastra/core": "latest",
     "@mastra/libsql": "^1.8.1",
+    "@mastra/mcp": "^1.5.0",
     "chat": "^4.26.0",
     "chat-adapter-mattermost": "^1.1.2",
     "zod": "^4.0.0"

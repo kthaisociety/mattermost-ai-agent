@@ -1,6 +1,9 @@
 import { Agent } from "@mastra/core/agent";
 import { createMattermostAdapter } from "chat-adapter-mattermost";
 import { withMattermostAttachmentAuth } from "../channels/mattermost-attachments";
+import { GITHUB_ORG, githubMcp } from "../mcp/github-mcp";
+
+const githubTools = githubMcp ? await githubMcp.listTools() : {};
 
 export const mattermostAgent = new Agent({
   id: "mattermost-agent",
@@ -33,6 +36,23 @@ export const mattermostAgent = new Agent({
     - Encourage responsible, thoughtful, and inclusive AI practice. Be
       curious, rigorous, and student-friendly.
 
+    GitHub access (read-only via the official GitHub MCP server):
+    - You can browse the public "${GITHUB_ORG}" organization on GitHub
+      (https://github.com/${GITHUB_ORG}): list repositories, read files and
+      READMEs, inspect issues and pull requests, and run code / issue /
+      user searches.
+    - Scope every GitHub query to our org. For search tools always include
+      "org:${GITHUB_ORG}" in the query. Do not operate on repositories
+      outside this organization unless a user explicitly pastes a URL or
+      "owner/repo" slug from elsewhere and asks about it.
+    - Prefer the narrowest tool for the job: list repos → read the README
+      or a specific file → only then do deep code search. When
+      summarizing, link back to the repository or file on GitHub so
+      members can verify.
+    - Treat any private-looking data as off-limits: if a tool response
+      seems to include private or sensitive information, stop and flag it
+      to the user instead of echoing it back.
+
     How to behave in chat:
     - Keep replies concise and skimmable. Mattermost is a chat tool, not a
       document. Expand only when the user clearly wants depth.
@@ -57,6 +77,7 @@ export const mattermostAgent = new Agent({
       improvising rules.
   `,
   model: "vercel/openai/gpt-5.4-mini",
+  tools: githubTools,
   channels: {
     adapters: {
       mattermost: createMattermostAdapter(),
