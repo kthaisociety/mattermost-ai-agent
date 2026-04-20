@@ -1,5 +1,6 @@
 import { Agent } from "@mastra/core/agent";
 import { createMattermostAdapter } from "chat-adapter-mattermost";
+import { withMattermostAttachmentAuth } from "../channels/mattermost-attachments";
 
 export const mattermostAgent = new Agent({
   id: "mattermost-agent",
@@ -21,6 +22,11 @@ export const mattermostAgent = new Agent({
   channels: {
     adapters: {
       mattermost: createMattermostAdapter(),
+    },
+    handlers: {
+      onDirectMessage: withMattermostAttachmentAuth,
+      onMention: withMattermostAttachmentAuth,
+      onSubscribedMessage: withMattermostAttachmentAuth,
     },
   },
 });
